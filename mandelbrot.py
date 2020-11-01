@@ -1,13 +1,16 @@
-import PIL.Image,colorsys,numpy
+import PIL.Image,colorsys,tkinter
 #a slow, but small mandelbrot rendering engine...
 
-#notes: i would like to make this faster by using numpy, but it doesnt make any difference
+#   TODO
+#   i) Implement tkinter (see imports) for simple GUI to edit viewfield
+#   ii) Make algorithm either j) faster or jj) chunked
+#   iii) Implement faster algorithms using numpy
 
 #image resolution - be careful
-size=25000
+size=200
 width,height=3*size,2*size #ensures image is scaled correctly
 
-iters=90 #higher values give nicer color sweep, but is more expensive
+iters=90 #this provides best color sweep, but is expensive
 x,y=-2,-1 #starting values for x/y
 xr,yr=3,2 #ranges of x/y values
 base_color=0.6 #rotates base color - changes palette
@@ -21,14 +24,17 @@ def mandelbrot(c):
         z=z*z+c #next iteration
     return (0,0,0)
 
+#pillow library code
 img=PIL.Image.new("RGB",(width,height)) #create image in memory
 pixels=img.load() #load drawing module for image
 
 #compute color of each pixel
-for w in numpy.arange(width):
-    print("Row = {}/{}".format(w,width))
+for w in range(width):
+    p=(w/width)*100
+    if p%1==0:
+        print("Percentage = {}%".format(p))
     re=x+(w*xr/width) #real component
-    for h in numpy.arange(height):
+    for h in range(height):
         im=y+(h*yr/height) #imaginary component
         pixels[int(w),int(h)]=mandelbrot(complex(re,im)) #draw pixel
 
